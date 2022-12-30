@@ -28,18 +28,17 @@
 
     <body class="body">
         
-            <!--
-                The left bar block
-                TODO add other points
-                    change the icon
-            -->
-            <div class="left_bar">
+        <!--
+            The left bar block
+            TODO add other points
+                change the icon
+        -->
+        <div class="left_bar">
                 
-            </div>
+        </div>
 
-            <span id="bar_point1" class="circle"></span>
-            <span id="bar_point2" class="circle"></span>
-
+        <span id="bar_point1" class="circle"></span>
+        
         <!--
             The main interface where user assign tasks
         -->
@@ -154,6 +153,35 @@
             </div>
         </div>
 
+        <!--
+            The extionsion page
+            combined with the second circle
+        -->
+        <span id="bar_point2" class="circle"></span>
+        <div id="extension_page">
+
+            <div id="add_extension">
+                <p id="extensions_text">Extensions</p>
+                <form action="/action_page.php" id="search_extension_form">
+                    <label for="search_extension"></label>
+                    <textarea id="search_extension" name="search_extension" placeholder="Search Extensions"></textarea>
+                </form>
+                <div id="extensions">
+                    <!--
+                        new extensions to be added here(in js)
+                    -->
+                </div>
+            </div>
+            
+            <div id="common_settings">
+                <p id="common_settings_text">Commonly Used Settings</p>
+                <div id="settings">
+                    <!--
+                        new settings to be added here(in js)
+                    -->
+                </div>
+            </div>
+        </div>
 
     </body>
 

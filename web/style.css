@@ -387,13 +387,106 @@
 
 /*
     The extionsion page starts here
+    All white colors means these need to be assigned through style.js file
 */
 
-#main_interface{
+#extension_page{
     visibility: hidden;
 }
 
+/* 
+    Left block (adding extensions)
+*/
+
 #add_extension {
-    height:550px;
+    position: absolute;
+    /*height: 650px;*/
+    /*width: 450px;*/
+    left: 9.11vw;
+    top: 6.14vh;
+    background-color: #2C2C2C;
+    
+}
+
+
+#extensions_text {
+    position: absolute;
+    width: 376px;
+    height: 38px;
+    top: -10px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 29px;
+
+    color: white;
+}
+
+#search_extension {
+    position: absolute;
+    height: 18px;
+    background-color: #2C2C2C;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 8px;
+    line-height: 12px;
+    color: white;
+    border:0;
+    outline:none;
+    resize: none;
+    top: 47px;
+    width: 360;
+}
+
+#search_extension::placeholder {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 8px;
+    line-height: 12px;
+    color: white;
+}
+
+#extensions {
+    position: absolute;
+    top: 90px;
+    width: 360px;
+    height: 520px;
+    overflow: auto;
+}
+
+/*
+    Right block(common settings)
+*/
+
+#common_settings {
+    position: absolute;
+    top: 6.14vh;
+    left: 50vw;
+    height: 650px;
     width: 450px;
+}
+
+#common_settings_text {
+    position: absolute;
+    width: 376px;
+    height: 38px;
+    top: -10px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 29px;
+
+    color: white; 
+}
+
+#settings {
+    position: absolute;
+    top: 60px;
+    width: 360px;
+    height: 550px;
+    overflow: auto; 
 }
