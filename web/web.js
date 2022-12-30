@@ -33,6 +33,10 @@
     const PAGE_LEFT_ARROW_CLASS = '.tasks_left_arrow';
     const PAGE_RIGHT_ARROW_CLASS = '.tasks_right_arrow';
     const TASK_CLASS = ".task";
+    const MAIN_PAGE_BUTTOM_ID = '#bar_point1';
+    const MAIN_PAGE_ID = '#main_interface';
+    const EXTENSION_PAGE_BUTTOM_ID = '#bar_point2';
+    const EXTENSION_PAGE_ID = '#extension_page';
 
     // all attributes positions
     const EXTENSION_BLOCK_NAME_CLASS = '#task_name';
@@ -81,6 +85,7 @@
     let tasks_descriptions = new Map();
     let tasks_time = new Map();
     let time_passed = new Map();
+    let current_page_element;
     // IMPORTANT
     const ALL_ATTRIBUTES= [
         tasks_names, tasks_time, tasks_descriptions, time_passed
@@ -99,6 +104,7 @@
         init_task();
         init_complete_task_buttom();
         init_extention();
+        init_page_buttoms();
     }
     
     // This initialize tasks block. 
@@ -320,6 +326,28 @@
 
         init_new_task();
         confirm_mouseout();
+    }
+
+    // init the left bar and the buttoms on it
+    function init_page_buttoms() {
+        current_page_element = document.querySelector(MAIN_PAGE_ID);
+        function show_main() {
+            console.log(current_page_element);
+            current_page_element.style.visibility = 'hidden';
+            let ele = document.querySelector(MAIN_PAGE_ID);
+            ele.style.visibility = 'visible';
+            current_page_element = ele;
+        }
+
+        function show_extension() {
+            current_page_element.style.visibility = 'hidden';
+            let ele = document.querySelector(EXTENSION_PAGE_ID);
+            ele.style.visibility = 'visible';
+            current_page_element = ele; 
+        }
+
+        document.querySelector(MAIN_PAGE_BUTTOM_ID).addEventListener('click', show_main);
+        document.querySelector(EXTENSION_PAGE_BUTTOM_ID).addEventListener('click', show_extension);
     }
 
     /*
