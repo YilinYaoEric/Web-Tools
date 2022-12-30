@@ -1,0 +1,399 @@
+/*
+    2022/12/22
+    @Yilin Yao
+    The css for the web.html file
+*/
+
+
+/*
+    TODO:
+    fix the issue so the html and css will adapt different screen size. 
+*/
+
+
+/*
+    Setting the left bar's css
+*/
+.body{
+    background: #1E1E1E;
+}
+
+.left_bar{
+    box-sizing: border-box;
+
+    position: absolute;
+    width: 40px;
+    height: 100vh;
+    left: 0vw;
+    top: 0vh;
+
+    background: #2C2C2C;
+    border: 1px solid #484848;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.circle {
+    width: 33px;
+    height: 33px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+#bar_point1 {
+    box-sizing: border-box;
+
+    position: absolute;
+    width: 29px;
+    height: 29px;
+    left: 5px;
+    top: 15px;
+
+    background: #2C2C2C;
+    border: 1px solid #4A4A4A;
+
+}
+
+#bar_point2 {
+    box-sizing: border-box;
+    position: absolute;
+
+    width:29px;
+    height:29px;
+    left:5px;
+    top:60px;
+
+    background:#2C2C2C;
+    border: 1px solid #4A4A4A;
+}
+
+/*
+    Task box 1
+*/
+.task1{
+    position: absolute;
+    width: 275px;
+    height: 126px;
+    left: 11.76vw;
+    top: 14.17vh;
+
+    background: #272727;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.task_name{
+    position: absolute;
+    width: 225px;
+    height: 24px;
+    left: 13px;
+    top: 0px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 24px;
+
+    opacity: 0.6;
+    color: white;
+}
+
+.task_light{
+    position: absolute;
+    width: 275px;
+    height: 24px;
+    bottom: 0px;
+    left: 0px;
+    
+    background: white;
+    opacity: 0.5;
+}
+
+/*
+    Task box 2 and its helper block
+*/
+.task2{
+    position: absolute;
+    width: 275px;
+    height: 126px;
+
+    background: #272727;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.helper_block {
+    position: absolute;
+    left: 37.23vw;
+    top: 14.17vh;
+}
+
+.task3{
+    position: absolute;
+    width: 275px;
+    height: 126px;
+    left: 11.76vw;
+    top: 35.71vh;
+
+    background: #272727;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); 
+}
+
+.task4{
+    position: absolute;
+    width: 275px;
+    height: 126px;
+    left: 37.23vw;
+    top: 35.71vh;
+
+    background: #272727;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);  
+}
+
+.tasks_left_arrow{
+    position: absolute;
+    left: 240;
+    top: -22;
+    width: 0; 
+    height: 0; 
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent; 
+    
+    border-right: 15px solid white; 
+}
+
+.tasks_right_arrow{
+    position: absolute;
+    left: 265;
+    top: -22;
+    width: 0;
+    height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent; 
+    
+    border-left: 15px solid white; 
+}
+
+/*
+    info box
+*/
+.info_box{
+    position: absolute;
+    width: 513px;
+    height: 210px;
+    left: 11.76vw;
+    top: 60.5vh;
+
+    background: #272727;
+}
+
+.info_box .info{
+    position: absolute;
+    width: 424px;
+    height: 173px;
+    left: 0px;
+    top: -22px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 10px;
+    line-height: 12px;
+    border:0;
+
+    color: #FFFFFF;
+    background-color:#272727;
+    outline:none;
+    resize:none;
+    
+    line-height: 1.2;
+}
+
+.info_box .confirm_buttom{
+    left: 456px;
+    top: 155px;
+    position: absolute;
+    width: 33px;
+    height: 33px;
+    visibility: hidden;
+}
+
+#confirm_task {
+    position: absolute;
+    opacity: 0.5;
+    visibility: hidden;
+    background-color: white;
+}
+
+.vector {
+    filter: invert(100%);
+}
+
+.info_box .vector{
+    position: absolute;
+    width: 16px;
+    height: 15px;
+    left: 9px;
+    top: 9px;
+
+    visibility:hidden;
+}
+
+/*
+    Time block
+*/
+.big_time{
+    position: absolute;
+    width: 428px;
+    height: 99px;
+    left: 66.67vw;
+    top: 7.23vh;
+    
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 64px;
+    line-height: 77px;
+    
+    opacity: 0.9;
+    color: white;
+}
+
+#second_time {
+    visibility: hidden;
+}
+
+.predict_time{
+    position: absolute;
+    width: 255px;
+    height: 39px;
+    left: 67.06vw;
+    top: 22.45vh;
+    
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 22px;
+
+    color: white;
+    opacity: 0.8;
+}
+
+/*
+    extention block
+*/
+.extention_block{
+    position: absolute;
+    width: 265px;
+    height: 416px;
+    left: 66.5vw;
+    top: 33vh;
+
+    background: #272727; 
+}
+
+.extention_name{
+    position: absolute;
+    width: 77px;
+    height: 20px;
+    left: 16px;
+    top: 5px;
+    
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 13px;
+    
+    color: #BEBEBE;
+}
+
+.extention_block .confirm_buttom{
+    bottom: 22px;
+    right: 17px;
+    position: absolute;
+    width: 33px;
+    height: 33px;
+}
+
+#confirm_new_task {
+    background-color: white;
+}
+
+.extention_block .vector {
+    position:absolute;
+    bottom: 8px;
+    right: 8px;
+}
+
+/* 
+    New task block
+*/
+.new_task_form{
+    position: absolute;
+    left: 16px;
+    top: 42px;
+}
+
+.new_task_form #task_name {
+    width: 200px;
+    height: 19px;
+    background-color: #3C3C3C;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 12px;
+    color: #BEBEBE;
+    position:absolute;
+    top: 4px;
+    left: 0px;
+    border:0;
+    outline:none;
+}
+
+.new_task_form .task_time {
+    width: 200px;
+    height: 19px;
+    background-color: #3C3C3C;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 12px;
+    color: #BEBEBE;
+    position: absolute;
+    top: 39px; 
+    border:0;
+    outline:none;
+}
+
+.new_task_form .task_description {
+    position: absolute;
+    width: 200px;
+    height: 100px;
+    background-color: #3C3C3C;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 10px;
+    line-height: 12px;
+    color: #7d7d7d;
+    position: absolute;
+    top: 74px; 
+    border:0;
+    resize: none;
+    outline:none;
+}   
+
+/*
+    The extionsion page starts here
+*/
+
+#main_interface{
+    visibility: hidden;
+}
+
+#add_extension {
+    height:550px;
+    width: 450px;
+}

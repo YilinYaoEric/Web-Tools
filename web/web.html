@@ -1,0 +1,160 @@
+<!--
+    2022/12/21
+    @Yilin Yao
+    the only html file for the whole web
+-->
+
+<!--
+    TODO:
+    fix the issue so the html and css will adapt different screen size. 
+-->
+
+<html lang="english">
+
+    <head>
+        <title>
+            Raccoon Work
+        </title>
+        <meta charset="utf-8">
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&amp;display=swap"
+            data-tag="font"
+        />
+        <link rel="stylesheet" href="./style.css" />
+        <script src="style.js"></script>
+        <script src='web.js'></script>
+    <head>
+
+    <body class="body">
+        
+            <!--
+                The left bar block
+                TODO add other points
+                    change the icon
+            -->
+            <div class="left_bar">
+                
+            </div>
+
+            <span id="bar_point1" class="circle"></span>
+            <span id="bar_point2" class="circle"></span>
+
+        <!--
+            The main interface where user assign tasks
+        -->
+        <div id="main_interface">
+            <!--
+                Task blocks
+            -->
+            <div class="task1">
+                <div class="task_light"></div>
+
+                <p class="task_name">
+                    Create a Task to Begin
+                </p>
+            </div>
+            <div class="helper_block">
+                <div class="task2">
+                    <div class="task_light"></div>
+
+                    <p class="task_name"></p>
+                </div>
+                
+                <!--
+                    The prev arrow of task management
+                    because the position of arrow will be relative to the task2 box, belong here
+                -->
+                <div class="tasks_left_arrow"></div>
+                <div class="tasks_right_arrow"></div>
+            </div>
+
+            <div class="task3">
+                <div class="task_light"></div>
+                <p class="task_name"> </p>
+            </div>
+            <div class="task4">
+                <div class="task_light"></div>
+                <p class="task_name"></p>
+            </div> 
+            
+            
+
+            <!--
+                The box that contains the inforamtion of the task
+            -->
+            <div class="info_box">
+
+                <form action="/action_page.php" class="new_task_form">
+                    <label for="info"></label>
+                    <textarea id="info" name="info" class="info" placeholder="Description"></textarea>
+                </form>
+
+                <div class="confirm_buttom">
+                    <span id="confirm_task" class="circle" ></span>
+
+                    <img
+                        alt="vector"
+                        src="./public/Vector.png"
+                        class="vector"
+                    />
+                </div>
+                
+            </div>
+
+            <!--
+                The box that contains the time spent for the task and predicted time
+            -->
+            <div class="time">
+                <p class="big_time" id="first_time">
+                    00:00:00
+                </p>
+
+                <p class="big_time" id="second_time">
+                    00:00:00
+                </p>
+
+                <p class="predict_time">Predicted: 00:00:00</p>
+            </div>
+
+            <!--
+                The box that contains the extentions:
+                    New Task
+            -->
+            <div class="extention_block">
+
+                <!--
+                    New Task extention
+                -->
+                <p class="extention_name">
+                    NEW TASK
+                </p>
+
+                <form action="/action_page.php" class="new_task_form">
+                    <label for="task_name"></label>
+                    <input type="text" id="task_name" name="task_name" placeholder="Name">
+
+                    <lable for="task_time"></lable>
+                    <input type="time" id="task_time" name="task_time" class="task_time" step="1">
+                    
+                    <lable for="description"></lable>
+                    <textarea id="description" name="description" rows="4" cols="50" class="task_description" placeholder="Hints"></textarea>
+                </form>
+
+                <div class="confirm_buttom">
+                    <span id="confirm_new_task" class="circle"></span>
+
+                    <img
+                        alt="vector"
+                        src="./public/Vector.png"
+                        class="vector"
+                    />
+                </div>
+
+            </div>
+        </div>
+
+
+    </body>
+
+</html>
