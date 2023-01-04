@@ -34,10 +34,10 @@
                 change the icon
         -->
         <div class="left_bar">
-                
+            <span id="bar_point1" class="circle left_buttom"></span>
+            <span id="bar_point2" class="circle left_buttom"></span>
         </div>
 
-        <span id="bar_point1" class="circle"></span>
         
         <!--
             The main interface where user assign tasks
@@ -131,13 +131,14 @@
 
                 <form action="/action_page.php" class="new_task_form">
                     <label for="task_name"></label>
-                    <input type="text" id="task_name" name="task_name" placeholder="Name">
+                    <input type="text" id="task_name" name="task_name" placeholder="Name" class="new_task_form_properties">
 
                     <lable for="task_time"></lable>
-                    <input type="time" id="task_time" name="task_time" class="task_time" step="1">
+                    <input type="text" id="task_time" name="task_time" class="new_task_form_properties" step="1" 
+                    placeholder="Predicted Time: " onfocus="this.select()">
                     
                     <lable for="description"></lable>
-                    <textarea id="description" name="description" rows="4" cols="50" class="task_description" placeholder="Hints"></textarea>
+                    <textarea id="description" name="description" rows="4" cols="50" class="new_task_form_properties" placeholder="Hints"></textarea>
                 </form>
 
                 <div class="confirm_buttom">
@@ -157,7 +158,7 @@
             The extionsion page
             combined with the second circle
         -->
-        <span id="bar_point2" class="circle"></span>
+        
         <div id="extension_page">
 
             <div id="add_extension">

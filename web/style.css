@@ -12,6 +12,13 @@
 
 
 /*
+    placeholder: #696969
+    text: #B7B7B7
+    background-light: #484848
+    background-dark: #1E1E1E
+*/
+
+/*
     Setting the left bar's css
 */
 .body{
@@ -30,38 +37,21 @@
     background: #2C2C2C;
     border: 1px solid #484848;
     box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    overflow: auto;
 }
 
 .circle {
-    width: 33px;
-    height: 33px;
+    width: 29px;
+    height: 29px;
     border-radius: 50%;
     display: inline-block;
 }
 
-#bar_point1 {
+.left_buttom {
+    position: static;
+    margin-left:5px;
+    margin-top: 15px;
     box-sizing: border-box;
-
-    position: absolute;
-    width: 29px;
-    height: 29px;
-    left: 5px;
-    top: 15px;
-
-    background: #2C2C2C;
-    border: 1px solid #4A4A4A;
-
-}
-
-#bar_point2 {
-    box-sizing: border-box;
-    position: absolute;
-
-    width:29px;
-    height:29px;
-    left:5px;
-    top:60px;
-
     background:#2C2C2C;
     border: 1px solid #4A4A4A;
 }
@@ -225,15 +215,14 @@
 
 .vector {
     filter: invert(100%);
+    position: absolute;
+    left: 6px;
+    top: 7px;
+    width: 16px;
+    height: 15px;
 }
 
 .info_box .vector{
-    position: absolute;
-    width: 16px;
-    height: 15px;
-    left: 9px;
-    top: 9px;
-
     visibility:hidden;
 }
 
@@ -280,6 +269,7 @@
 
 /*
     extention block
+    // typo: extension -> extention
 */
 .extention_block{
     position: absolute;
@@ -292,11 +282,11 @@
 }
 
 .extention_name{
-    position: absolute;
+    position: static;
     width: 77px;
     height: 20px;
-    left: 16px;
-    top: 5px;
+    margin-left: 16px;
+    margin-top: 16px;
     
     font-family: 'Inter';
     font-style: normal;
@@ -319,70 +309,35 @@
     background-color: white;
 }
 
-.extention_block .vector {
-    position:absolute;
-    bottom: 8px;
-    right: 8px;
-}
-
 /* 
     New task block
 */
 .new_task_form{
     position: absolute;
     left: 16px;
-    top: 42px;
+    top: 38px;
 }
 
-.new_task_form #task_name {
+.new_task_form_properties {
+    position:static;
     width: 200px;
-    height: 19px;
+    margin-top:7px;
+    margin-bottom: 9px;
     background-color: #3C3C3C;
     font-family: 'Inter';
     font-style: normal;
     font-weight: 400;
     font-size: 10px;
     line-height: 12px;
+    border: 0;
+    outline: none;
     color: #BEBEBE;
-    position:absolute;
-    top: 4px;
-    left: 0px;
-    border:0;
-    outline:none;
-}
-
-.new_task_form .task_time {
-    width: 200px;
     height: 19px;
-    background-color: #3C3C3C;
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 10px;
-    line-height: 12px;
-    color: #BEBEBE;
-    position: absolute;
-    top: 39px; 
-    border:0;
-    outline:none;
-}
-
-.new_task_form .task_description {
-    position: absolute;
-    width: 200px;
-    height: 100px;
-    background-color: #3C3C3C;
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 10px;
-    line-height: 12px;
-    color: #7d7d7d;
-    position: absolute;
-    top: 74px; 
-    border:0;
     resize: none;
-    outline:none;
+}
+
+.new_task_form #description {
+    height: 100px;
 }   
 
 /*
@@ -391,7 +346,7 @@
 */
 
 #extension_page{
-    visibility: hidden;
+    display: none;
 }
 
 /* 
@@ -432,7 +387,7 @@
     font-weight: 400;
     font-size: 8px;
     line-height: 12px;
-    color: white;
+    color: #B7B7B7;
     border:0;
     outline:none;
     resize: none;
@@ -446,7 +401,7 @@
     font-weight: 400;
     font-size: 8px;
     line-height: 12px;
-    color: white;
+    color: #696969;
 }
 
 #extensions {
@@ -455,6 +410,7 @@
     width: 360px;
     height: 520px;
     overflow: auto;
+
 }
 
 /*
@@ -480,7 +436,7 @@
     font-size: 20px;
     line-height: 29px;
 
-    color: white; 
+    color: #B7B7B7; 
 }
 
 #settings {
@@ -489,4 +445,49 @@
     width: 360px;
     height: 550px;
     overflow: auto; 
+}
+
+.extension_bar {
+    margin-top: 25px;
+    width: 360px;
+    height: 70px;
+    overflow: auto;
+    position: static;
+    background-color: #272727;
+}
+
+.extension_light {
+    position:absolute;
+    right:0;
+    background-color: white;
+    height: 70px;
+    width: 20px; 
+}
+
+.extension_description {
+    position: absolute;
+    left: 10px;
+    top: 48px;
+    width: 300px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 7px;
+    line-height: 14px;
+    color: #B7B7B7;
+}
+/*
+    TODO: improve decription 
+*/
+
+.extension_name {
+    position: absolute;
+    left: 10px;
+    top: 24px;
+    font-family: 'Inter';
+    font-style: 'normal';
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 12px;
+    color: #B7B7B7;
 }

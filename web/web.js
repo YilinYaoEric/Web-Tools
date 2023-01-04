@@ -105,6 +105,8 @@
         init_complete_task_buttom();
         init_extention();
         init_page_buttoms();
+        init_all_extensions();
+        init_styles();
     }
     
     // This initialize tasks block. 
@@ -260,7 +262,9 @@
         set_up_time(id);
         display_first_time();
         unlock_decription();
-        time_interval_id = setInterval(start_time, 1000);
+        let today = new Date();
+        let time_begin = [today.getHours(), today.getMinutes(), today.getSeconds()];
+        time_interval_id = setInterval(start_time, 1000, time_begin, time_passed.get(all_tasks_id_by_position[current_focus-GAP_BETWEEN_POSITION_AND_ACTUAL_ARRAY_POSITION]));
     }
 
     // init the complete task buttom at the info/description block. 
@@ -294,7 +298,8 @@
     function init_extention() {
         // the function perform after the use click on the confirm buttom on the extension block
         function confirm_click() {
-            if (document.querySelector(NEW_TASK_ALL_ATTRIBUTES[1]).value != '') {
+
+            if (document.querySelector(NEW_TASK_ALL_ATTRIBUTES[1]).value != 'Invalid time string') {
                 create_new_task_using_new_task_info();
                 // delete the value in each answer box. 
                 for (let i = 0; i < NEW_TASK_ALL_ATTRIBUTES.length; i++) {
@@ -305,7 +310,7 @@
 
         // the function perform after the use mouse move over on the confirm buttom on the extension block
         function confirm_mouseover() {
-            if (document.querySelector(NEW_TASK_ALL_ATTRIBUTES[1]).value != ''){
+            if (document.querySelector(NEW_TASK_ALL_ATTRIBUTES[1]).value != 'Invalid time string'){
                 document.querySelector(EXTENTION_BLOCK_CONFIRM_CIRCLE_CLASS).style.opacity = NON_DARK_LIGHT_OPACITY_FOR_CONFIRM_CIRCLE;
             }
         }
@@ -326,28 +331,221 @@
 
         init_new_task();
         confirm_mouseout();
+        document.querySelector(EXTENSION_BLOCK_TIME_CLASS).addEventListener('blur', init_blur_out_time);
     }
 
     // init the left bar and the buttoms on it
     function init_page_buttoms() {
         current_page_element = document.querySelector(MAIN_PAGE_ID);
         function show_main() {
-            console.log(current_page_element);
-            current_page_element.style.visibility = 'hidden';
+            current_page_element.style.display = 'none';
             let ele = document.querySelector(MAIN_PAGE_ID);
-            ele.style.visibility = 'visible';
+            ele.style.display = 'block';
             current_page_element = ele;
         }
 
         function show_extension() {
-            current_page_element.style.visibility = 'hidden';
+            current_page_element.style.display = 'none';
             let ele = document.querySelector(EXTENSION_PAGE_ID);
-            ele.style.visibility = 'visible';
+            ele.style.display = 'block';
             current_page_element = ele; 
         }
 
         document.querySelector(MAIN_PAGE_BUTTOM_ID).addEventListener('click', show_main);
         document.querySelector(EXTENSION_PAGE_BUTTOM_ID).addEventListener('click', show_extension);
+    }
+
+    function init_blur_out_time(ele) {
+        magicTime(ele.target);
+    }
+
+    /*
+        import magicTime()
+        Copyright: 
+            Magic time parsing, based on Simon Willison's Magic date parser
+            @see http://simon.incutio.com/archive/2003/10/06/betterDateInput
+            @author Stoyan Stefanov &lt;stoyan@phpied.com&gt;
+    */ 
+    
+    /**
+     * This is the place to customize the result format,
+     * once the date is figured out
+     *
+     * @param Date d A date object
+     * @return string A time string in the preferred format
+     */
+    function getReadable(d) {
+        return padAZero(d.getHours())
+            + ':'
+            + padAZero(d.getMinutes())
+            + ':'
+            + padAZero(d.getSeconds());
+    }
+    /**
+     * Helper function to pad a leading zero to an integer
+     * if the integer consists of one number only.
+     * This function s not related to the algo, it's for
+     * getReadable()'s purposes only.
+     *
+     * @param int s An integer value
+     * @return string The input padded with a zero if it's one number int
+     * @see getReadable()
+     */
+    function padAZero(s) {
+        s = s.toString();
+        if (s.length == 1) {
+            return '0' + s;
+        } else {
+            return s;
+        }
+    }
+
+    /**
+     * Array of objects, each has:
+     * <ul><li>'re' - a regular expression</li>
+     * <li>'handler' - a function for creating a date from something
+     *     that matches the regular expression</li>
+     * <li>'example' - an array of examples that show matching examples</li>
+     * Handlers may throw errors if string is unparseable.
+     * Examples are used for automated testing, so they should be updated
+     *   once a regexp is added/modified.
+     */
+    var timeParsePatterns = [
+        // Now
+        {   re: /^now/i,
+            example: new Array('now'),
+            handler: function() {
+                return new Date();
+            }
+        },
+        // p.m.
+        {   re: /(\d{1,2}):(\d{1,2}):(\d{1,2})(?:p| p)/,
+            example: new Array('9:55:00 pm','12:55:00 p.m.','9:55:00 p','11:5:10pm','9:5:1p'),
+            handler: function(bits) {
+                var d = new Date();
+                var h = parseInt(bits[1], 10);
+                if (h < 12) {h += 12;}
+                d.setHours(h);
+                d.setMinutes(parseInt(bits[2], 10));
+                d.setSeconds(parseInt(bits[3], 10));
+                return d;
+            }
+        },
+        // p.m., no seconds
+        {   re: /(\d{1,2}):(\d{1,2})(?:p| p)/,
+            example: new Array('9:55 pm','12:55 p.m.','9:55 p','11:5pm','9:5p'),
+            handler: function(bits) {
+                var d = new Date();
+                var h = parseInt(bits[1], 10);
+                if (h < 12) {h += 12;}
+                d.setHours(h);
+                d.setMinutes(parseInt(bits[2], 10));
+                d.setSeconds(0);
+                return d;
+            }
+        },
+        // p.m., hour only
+        {   re: /(\d{1,2})(?:p| p)/,
+            example: new Array('9 pm','12 p.m.','9 p','11pm','9p'),
+            handler: function(bits) {
+                var d = new Date();
+                var h = parseInt(bits[1], 10);
+                if (h < 12) {h += 12;}
+                d.setHours(h);
+                d.setMinutes(0);
+                d.setSeconds(0);
+                return d;
+            }
+        },
+        // hh:mm:ss
+        {   re: /(\d{1,2}):(\d{1,2}):(\d{1,2})/,
+            example: new Array('9:55:00','19:55:00','19:5:10','9:5:1','9:55:00 a.m.','11:55:00a'),
+            handler: function(bits) {
+                var d = new Date();
+                d.setHours(parseInt(bits[1], 10));
+                d.setMinutes(parseInt(bits[2], 10));
+                d.setSeconds(parseInt(bits[3], 10));
+                return d;
+            }
+        },
+        // hh:mm
+        {   re: /(\d{1,2}):(\d{1,2})/,
+            example: new Array('9:55','19:55','19:5','9:55 a.m.','11:55a'),
+            handler: function(bits) {
+                var d = new Date();
+                d.setHours(parseInt(bits[1], 10));
+                d.setMinutes(parseInt(bits[2], 10));
+                d.setSeconds(0);
+                return d;
+            }
+        },
+        // hhmmss
+        {   re: /(\d{1,6})/,
+            example: new Array('9','9a','9am','19','1950','195510','0955'),
+            handler: function(bits) {
+                var d = new Date();
+                var h = bits[1].substring(0,2);
+                var m = parseInt(bits[1].substring(2,4), 10);
+                var s = parseInt(bits[1].substring(4,6), 10);
+                if (isNaN(m)) {m = 0;}
+                if (isNaN(s)) {s = 0;}
+                d.setHours(parseInt(h, 10));
+                d.setMinutes(parseInt(m, 10));
+                d.setSeconds(parseInt(s, 10));
+                return d;
+            }
+        },
+
+
+    ];
+
+    /**
+     * Method that loops through all regexp's examples and lists them.
+     * Optionally, the method can also run tests with the examples.
+     *
+     * @param boolean run_test TRUE is tests should be run on the examples, FALSE if only to show examples
+     * @return object An XML 'ul' node
+     */
+
+    /**
+     * Parses a string to figure out the time it represents
+     *
+     * @param string s String to parse
+     * @return Date a valid Date object
+     * @throws Error
+     */
+    function parseTimeString(s) {
+        for (var i = 0; i < timeParsePatterns.length; i++) {
+            var re = timeParsePatterns[i].re;
+            var handler = timeParsePatterns[i].handler;
+            var bits = re.exec(s);
+            if (bits) {
+                return handler(bits);
+            }
+        }
+        throw new Error("Invalid time string");
+    }
+
+    // changed comparing to the original version @Yilin Yao 2023/1/3
+    function magicTime(input) {
+        let el = input;
+        if (input.value == '') {
+            return;
+        }
+        try {
+            var d = parseTimeString(input.value);
+            input.value = getReadable(d);
+        }
+        catch (e) {
+            try {
+                var message = e.message;
+                // Fix for IE6 bug
+                if (message.indexOf('is null or not an object') > -1) {
+                    message = 'Invalid time string';
+                }
+                el.value = message;
+            } catch (e){} // no message div
+        }
     }
 
     /*
@@ -501,17 +699,25 @@
     }
 
     // start counting the time
-    async function start_time() {
-            let arr = set_time(DEFALT_TIME).split(':');
-            arr[2]++;
-            for(let i = 2; i > 0; i--) {
-                if (arr[i] >= 60) {
-                    arr[i] -= 60;
-                    arr[i-1]++;
-                }
-            }
-            if (arr[0] >= 60) {return;}
-            set_time(arr[0] + ":" + arr[1] + ":" + arr[2]);
+    // take an array representing the time: [hours, mins, seconds]. 
+    async function start_time(time_begin, plus_time) {
+        plus_time = plus_time.split(':');
+        let today = new Date();
+        let time_now = [today.getHours(), today.getMinutes(), today.getSeconds()];
+        let arr = [
+            time_now[0]-time_begin[0]+parseInt(plus_time[0]),
+            time_now[1]-time_begin[1]+parseInt(plus_time[1]),
+            time_now[2]-time_begin[2]+parseInt(plus_time[2])
+        ]
+        while (arr[2] < 0) {
+            arr[1]--;
+            arr[2] = 60 + arr[2];
+        }
+        while (arr[1] < 0) {
+            arr[0]--;
+            arr[1] = 60 + arr[1];
+        }
+        set_time(arr[0] + ":" + arr[1] + ":" + arr[2]);
     }
 
     // light up the description block's confirm circle. 
@@ -562,13 +768,9 @@
         // if task name is not unique, add a number after it to make it unique
         // TODO: fix
         function check_unique(name) {
-            console.log(current_tasks.length);
             for (let i = 0; i < current_tasks.length; i++){
-                console.log(i);
-                console.log(tasks_names.get(current_tasks[i]));
                 // if the name exists
                 if (name == tasks_names.get(current_tasks[i]) ){
-                    console.log('1');
                     // if the last digit is an integer, and the -2(position) digit is ' ', the last integer++, otherwise append ' 1'
                     if (Number.isInteger(name.charAt(name.length)) && name.charAt(name.length-1) == ' ') {
                         let ret = name.substring(0, name.length);
@@ -639,6 +841,317 @@
             }
         }
         current_tasks = new_arr;
+    }
+
+
+    /*
+        Below are extensions
+        extensions need to return a div element to be added to the #extension div and append class '.extension_bar'
+        in this extension, there need to be 
+            a name append class '.extension_name'
+            a descrption append class '.extension_description'
+    */
+
+    const EXTENSIONS_LIST = [color_extension];
+    const EXTENSIONS_COUNT = EXTENSIONS_LIST.length;
+    const EXTENSIONS_CONTAINER_DIV = '#extensions';
+    let extension_is_active = new Map(); // Key = div element, Value = boolean 
+
+    // function for adding an element to the extensions div
+    // input: 
+    //      the extension name, extension description, the functionality after the extension is active, the functionality after the extension is cancled. 
+    function new_extension(name, description, active_functionality, cancle_functionality) {
+        let container = document.querySelector(EXTENSIONS_CONTAINER_DIV);
+
+        let new_ele = document.createElement('div');
+        new_ele.className = 'extension_bar'; 
+
+        let new_ele_light_bar = document.createElement('div');
+        new_ele_light_bar.className = 'extension_light';
+
+        let new_ele_decription = document.createElement('p');
+        new_ele_decription.className = 'extension_description'; 
+        new_ele_decription.textContent = description;
+
+        let new_ele_name = document.createElement('p');
+        new_ele_name.className = 'extension_name';
+        new_ele_name.textContent = name;
+
+        new_ele.appendChild(new_ele_light_bar);
+        new_ele.appendChild(new_ele_decription);
+        new_ele.appendChild(new_ele_name);
+        container.appendChild(new_ele);
+
+        new_ele.addEventListener('mouseover', extension_light_on);
+        new_ele.addEventListener('mouseout', extension_light_off);
+        new_ele.addEventListener('click', extension_clicked);
+        extension_is_active.set(new_ele, 0);
+
+        function extension_clicked(ele) {
+            // if this is already clicked, cancle
+            let target = ele.target;
+            if (target.className != 'extension_bar') {
+                target = target.parentElement;
+            }
+            extension_is_active.set(target, extension_is_active.get(target) ^ 1);
+            if (!extension_is_active.get(target)) {
+                extension_light_off(ele);
+                cancle_functionality();
+            } else {
+                extension_light_on(ele);
+                active_functionality();
+            }
+        }
+
+        function extension_light_on(ele) {
+            ele = ele.target;
+            if (ele.className != 'extension_bar') {
+                ele = ele.parentElement;
+            }
+
+            let arr = document.querySelectorAll('.extension_light');
+            for (let i = 0; i < arr.length; i++) {
+                if (ele.contains(arr[i])) {
+                    arr[i].style.opacity = NON_DARK_LIGHT_OPACITY_FOR_TASK_LIGHT;
+                    return;
+                }
+            }
+        }
+
+        function extension_light_off(ele) {
+            ele = ele.target;
+            if (ele.className != 'extension_bar') {
+                ele = ele.parentElement;
+            }
+
+            if (extension_is_active.get(ele)) {
+                return;
+            }
+
+            let arr = document.querySelectorAll('.extension_light');
+            for (let i = 0; i < arr.length; i++) {
+                if (ele.contains(arr[i])) {
+                    arr[i].style.opacity = DARK_LIGHT_OPACITY_FOR_TASK_LIGHT;
+                    return;
+                }
+            }
+        }
+        new_ele_light_bar.style.opacity = DARK_LIGHT_OPACITY_FOR_TASK_LIGHT;
+    }
+
+    // function for adding an element to the setting div
+    // input: an element, the element that will be added. 
+    // the element is recommended to apply the class .extension_bar
+    function new_setting(ele) {
+        let setting_div = document.querySelector('#settings');
+        setting_div.appendChild(ele);
+    }
+
+    // function that init all the extensions
+    function init_all_extensions() {
+        for (let i = 0; i < EXTENSIONS_COUNT; i++) {
+            EXTENSIONS_LIST[i]();
+        }
+    }
+
+   /*
+        @Yilin Yao
+        2022/1/1
+        Color extension - let user to change the main color as they wish
+        return an element
+    */
+    function color_extension() {
+        const NAME = 'Change Theme Color';
+        const DESCRIPTION = 'Change the theme color of the web page to different colors!';
+        const FUCNTIONALITY = action;
+        const CANCLE_FUNCTIONALITY = cancle; 
+
+        function action() {
+            new_setting(new_setting_ele());
+        }
+
+        function cancle() {
+            let ele = document.querySelector('#new_color_ele');
+            ele.remove();
+        }
+
+        new_extension(NAME, DESCRIPTION, FUCNTIONALITY, CANCLE_FUNCTIONALITY);
+
+        // returns a new setting element
+        // element id = new_color_ele
+        function new_setting_ele() {
+            let overall_div = document.createElement('div');
+            overall_div.className = 'extension_bar';
+            overall_div.id = 'new_color_ele';
+            
+            let color_text = document.createElement('p');
+            color_text.className = 'extension_name'
+            color_text.textContent = 'Color:';
+
+            let aviliable_colors = document.createElement('div');
+            aviliable_colors.style.position = 'absolute';
+            aviliable_colors.style.display = 'flex';
+            aviliable_colors.style.top = '60px';
+            aviliable_colors.style.left = '10px';
+            aviliable_colors.style.height = '20px';
+            aviliable_colors.style.width = '75%';
+            aviliable_colors.style.overflow = 'auto';
+
+                let green = document.createElement('span');
+                let white = document.createElement('span');
+                let blue = document.createElement('span');
+                green.style.backgroundColor = '#60CF73';
+                white.style.backgroundColor = '#e3e3e3';
+                blue.style.backgroundColor = '#5BA9F1';
+                let colors = [green, white, blue];
+                for (let i = 0 ; i < colors.length; i++) {
+                    colors[i].style.width = '20px';
+                    colors[i].style.height = '20px';
+                    colors[i].style.marginLeft = '20px';
+                    colors[i].className = 'circle';
+                    colors[i].addEventListener('click', (ele) => {
+                        init_color(ele.target.style.backgroundColor);
+                    })
+                    aviliable_colors.appendChild(colors[i]);
+                }
+
+
+            let form = document.createElement('form');
+            form.action = "/action_page.php";
+
+            let lable = document.createElement('lable');
+            lable.htmlFor = 'new_color';
+
+            let new_color_input_box = document.createElement('textarea');
+            new_color_input_box.style.position = 'absolute';
+            new_color_input_box.style.right = '6%';
+            new_color_input_box.style.height = '18px';
+            new_color_input_box.style.backgroundColor= '#2C2C2C';
+            new_color_input_box.style.fontFamily = 'Inter';
+            new_color_input_box.style.fontStyle = 'normal';
+            new_color_input_box.style.fontWeight = '400';
+            new_color_input_box.style.fontSize = '8px';
+            new_color_input_box.style.lineHeight = '12px';
+            new_color_input_box.style.color = '#696969';
+            new_color_input_box.style.border = '0';
+            new_color_input_box.style.outline = 'none';
+            new_color_input_box.style.resize = 'none';
+            new_color_input_box.style.width = '60px';
+            new_color_input_box.style.top = '60px';
+            new_color_input_box.placeholder = '#123456';
+            new_color_input_box.id = 'color_custom_input';
+
+            let new_color_submit_buton = document.createElement('button');
+            new_color_submit_buton.style.backgroundColor = '#2C2C2C';
+            new_color_submit_buton.style.fontFamily = 'Inter';
+            new_color_submit_buton.style.fontStyle = 'normal';
+            new_color_submit_buton.style.fontWeight = '400';
+            new_color_submit_buton.style.fontSize = '8px';
+            new_color_submit_buton.style.fontWeight = '12px';
+            new_color_submit_buton.style.color = '#696969';
+            new_color_submit_buton.style.border = '0';
+            new_color_submit_buton.style.outline = 'none';
+            new_color_submit_buton.style.position = 'absolute';
+            new_color_submit_buton.style.top = '37px';
+            new_color_submit_buton.style.right = '6%';
+            new_color_submit_buton.textContent = 'Change Color';
+            new_color_submit_buton.type = "button";
+            new_color_submit_buton.addEventListener('click', (ele) => {
+                let color = document.querySelector('#color_custom_input').value;
+                if (color.toLowerCase() == 'reccoon' || color.toLowerCase() == '浣熊') {
+                    color = '#8D8581';
+                }
+                if (color == undefined) {
+                    return;
+                }
+                try {
+                    init_color(color);
+                } catch(error) {
+                    console.log('error');
+                    return;
+                }
+            })
+            
+            form.appendChild(lable);
+            form.appendChild(new_color_input_box);
+            form.appendChild(new_color_submit_buton);
+            
+            overall_div.appendChild(color_text);
+            overall_div.appendChild(aviliable_colors);
+            overall_div.appendChild(form);
+
+            return overall_div;
+        }
+    }
+
+
+
+
+    /*
+        Below codes will set up the lights and the initial styles of the web page. 
+    */
+    const ALL_CLASSES_OF_MAJOR_COLOR = [
+        TASK_NAME_CLASS,
+        BIG_TIME_CLASS,
+        ALTERNATIVE_BIG_TIME,
+        PREDICTED_TIME_CLASS
+    ];
+
+    const ALL_CLASSES_OF_MAJOR_BACKGROUND = [
+        TASK_LIGHT_CLASS, 
+        CIRCLE_IN_INFO_BOX_CLASS,
+        EXTENTION_BLOCK_CONFIRM_CIRCLE_CLASS,
+        '.extension_light'
+    ];
+
+    const ALL_DARK_NEEDED_CLASSES = [
+        TASK_NAME_CLASS,
+        TASK_LIGHT_CLASS,
+        CIRCLE_IN_INFO_BOX_CLASS,
+        EXTENTION_BLOCK_CONFIRM_CIRCLE_CLASS
+    ]
+    const ALL_DARK_OPACITYS = [
+        DARK_LIGHT_OPACITY_FOR_TASK_NAME,
+        DARK_LIGHT_OPACITY_FOR_TASK_LIGHT,
+        DARK_LIGHT_OPACITY_FOR_CONFIRM_CIRCLE,
+        DARK_LIGHT_OPACITY_FOR_CONFIRM_CIRCLE
+    ]
+
+    // #5BA9F1 - blue
+    // #e3e3e3 - white 
+    // #60CF73 - wechat green 
+    const DEFULT_COLOR = '#e3e3e3';
+
+    function init_styles(){
+        init_color(DEFULT_COLOR);
+        init_opacity();
+    }
+
+    function init_color(color) {
+        for (let i = 0; i < ALL_CLASSES_OF_MAJOR_COLOR.length; i++) {
+            let arr = document.querySelectorAll(ALL_CLASSES_OF_MAJOR_COLOR[i]);
+            for (let j = 0; j < arr.length; j++) {
+                arr[j].style.color = color;
+            }
+        }
+
+        for (let i = 0; i < ALL_CLASSES_OF_MAJOR_BACKGROUND.length; i++) {
+            let arr = document.querySelectorAll(ALL_CLASSES_OF_MAJOR_BACKGROUND[i]);
+            for (let j = 0; j < arr.length; j++) {
+                arr[j].style.backgroundColor = color;
+            }
+        }
+        document.querySelector(PAGE_LEFT_ARROW_CLASS).style.borderRightColor = color;
+        document.querySelector(PAGE_RIGHT_ARROW_CLASS).style.borderLeftColor = color;
+    }
+
+    function init_opacity() {
+        for(let i = 0; i < ALL_DARK_NEEDED_CLASSES.length; i++) {
+            let arr = document.querySelectorAll(ALL_DARK_NEEDED_CLASSES[i]);
+            for (let j = 0; j < arr.length; j++) {
+                arr[j].style.opacity = ALL_DARK_OPACITYS[i];
+            }
+        }
     }
 
 })();
