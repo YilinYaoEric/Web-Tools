@@ -550,6 +550,82 @@
             switch_page(document.querySelector(LOGIN_PAGE_ID));
         }
         ele.addEventListener('click', to_login_page);
+
+        const LOGIN_CONFIRM_ID = '#login';
+        const CREATE_USER_CONFIRM_ID = '#create_user';
+        const LOG_IN_ERROR_MESSAGE_DISPLACEMENT_ID = '#login_error_hint';
+        let login_ele = document.querySelector(LOGIN_CONFIRM_ID);
+        let create_user_ele = document.querySelector(CREATE_USER_CONFIRM_ID);
+        login_ele.addEventListener('click', confirm_log_in);
+        create_user_ele.addEventListener('click', confirm_create_user);
+        
+        // return the username and password entered in the box. 
+        function get_username_and_password() {
+            let username_ele = document.querySelector(USERNAME_ID);
+            let password_ele = document.querySelector(PASSWORD_ID);
+            return [username_ele.value, password_ele.value];
+        }
+
+        function confirm_log_in() {
+            let combination = get_username_and_password();
+            let username = combination[0];
+            let password = combination[1];
+            let hint = document.querySelector(LOG_IN_ERROR_MESSAGE_DISPLACEMENT_ID);
+            try {
+                username_is_valid(username);
+                password_is_valid(password);
+                hint.textContent = 'loged in!';
+                hint.style.color = 'green';
+            } catch(e) {
+                hint.style.color = 'darkred';
+                document.querySelector(LOG_IN_ERROR_MESSAGE_DISPLACEMENT_ID).textContent = (e.message);
+            }
+        }
+
+        function confirm_create_user() {
+            let combination = get_username_and_password();
+            let username = combination[0];
+            let password = combination[1];
+            try {
+                new_username_is_valid(username);
+                password_is_valid(password);
+                document.querySelector(LOG_IN_ERROR_MESSAGE_DISPLACEMENT_ID).textContent = 'Account Created!';
+                hint.color = 'green';
+            } catch(e) {
+                hint.color = 'darkred';
+                document.querySelector(LOG_IN_ERROR_MESSAGE_DISPLACEMENT_ID).textContent = (e.message);
+            }
+        }
+
+        // throw an error with error message if the username is not valid, otherwise does nothing
+        function username_is_valid(str) {
+                
+            if (
+                str === undefined ||
+                str == ''
+            ) {
+                throw new Error('Empty Username');
+            }
+        }
+
+        function new_username_is_valid(str) {
+            // TODO update this later with the backend storaged. -- there can't be two same username
+            username_is_valid(str);
+        }
+
+        function password_is_valid(str) {
+            // TODO update this using regular expression
+            if (
+                str === undefined ||
+                str == ''
+            ) {
+                throw new Error('Empty Password');
+            }
+
+            if (str.length < 7) {
+                throw new Error('The Password Length Has To Be Greater Than 7.');
+            }
+        }
     }
 
 
