@@ -184,6 +184,29 @@
             </div>
         </div>
 
+        <!--
+            The user login logo
+            For now, we are using text to replace the logo
+        -->
+        <div id="login_div">
+            <p id="login_logo">Log In</p>
+        </div>
+
+        <!--
+            Login Page
+        -->
+        <div id="login_page">
+            <div id="user_info_input">
+                <form action="/action_page.php" id="search_">
+                    <lable for="username"></lable>
+                    <textarea id="username" name="username" placeholder="Username: " class="textbox"></textarea>
+                    <textarea id="password" name="password" placeholder="password" class="textbox"></textarea>
+                </form>
+                <button type="button" id="login" class="button placeholder_text">Login</button>
+                <button type="button" id="create_user" class="button placeholder_text">Create New Account</button>
+                <p id="login_error_hint" class="text"></p>
+            </div>
+        </div>
     </body>
 
 </html>

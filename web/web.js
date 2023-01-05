@@ -7,6 +7,11 @@
 "use strict";
 
 (function() {
+    // some constant to avoid magic number
+    const ONE_SECOND = 1000;
+    const LENGTH_OF_TIME_FOMAT = 2; // 2 stands for 00:00:00, 1 stands for 00:00, 0 stands for 00
+    const TIME_SEPERATOR = ':';
+
     const ALL_TASKS_NAMES = ["task1", "task2", "task3", "task4"]; 
     const TOTAL_TASKS_BLOCK = ALL_TASKS_NAMES.length;
 
@@ -37,6 +42,10 @@
     const MAIN_PAGE_ID = '#main_interface';
     const EXTENSION_PAGE_BUTTOM_ID = '#bar_point2';
     const EXTENSION_PAGE_ID = '#extension_page';
+    const LOGIN_PAGE_ID = "#login_page";
+    const LOG_IN_LOGO_ID = "#login_logo";
+    const USERNAME_ID = "#username";
+    const PASSWORD_ID = "#password";
 
     // all attributes positions
     const EXTENSION_BLOCK_NAME_CLASS = '#task_name';
@@ -54,7 +63,7 @@
     const UNDEFINED_FOCUS = -1;
     const UNDEFINED_TIME_INTERVAL = -1;
     const UNDEFINED_INFO = "";
-    const DEFALT_TIME = "00:00:00";
+    const DEFALT_TIME = get_defalt_time();
     const UNDEFINED_TASK_NAME = "Unname Task";
     const AUTO_PENDING_OF_UNDEFINED_TASK_NAME = 1; 
 
@@ -107,6 +116,7 @@
         init_page_buttoms();
         init_all_extensions();
         init_styles();
+        init_login();
     }
     
     // This initialize tasks block. 
@@ -153,9 +163,6 @@
     // this will light the bar and show description
     function mouseoverAction(ele) {
         let info = find_information_of_clicked_element(ele);
-        if (info == 'page') {
-            return;
-        }
         mouseover_action_ele(info[0], info[1]);
     }
 
@@ -177,9 +184,6 @@
     // return the description to the focus. 
     function mouseoffAction(ele){
         let info = find_information_of_clicked_element(ele);
-        if (info == 'page') {
-            return;
-        }
         mouseoff_actiopn_ele(info[0], info[1])
     }
     
@@ -187,14 +191,14 @@
     function mouseoff_actiopn_ele(position, id) {
         if (position != current_focus || id == UNDEFINED_TASK_ID){
             light_off(position);
-            if (id != UNDEFINED_TASK_ID) {
-                tasks_descriptions.set(id, change_description_to(temp_focus_info));
-                temp_focus_info = UNDEFINED_INFO;
-                change_predicted_time_to(temp_focus_pre_time);
-                temp_focus_pre_time = UNDEFINED_INFO;
-                display_first_time();
+            if (id == UNDEFINED_TASK_ID) {
+                return;
             }
-            
+            tasks_descriptions.set(id, change_description_to(temp_focus_info));
+            temp_focus_info = UNDEFINED_INFO;
+            change_predicted_time_to(temp_focus_pre_time);
+            temp_focus_pre_time = UNDEFINED_INFO;
+            display_first_time();
         }
     }
 
@@ -205,9 +209,6 @@
     function clickAction(ele){
         // locate the actual target element
         let info = find_information_of_clicked_element(ele);
-        if (info == 'page') {
-            return;
-        }
         click_action_ele(info[0], info[1]);
     }
 
@@ -262,9 +263,7 @@
         set_up_time(id);
         display_first_time();
         unlock_decription();
-        let today = new Date();
-        let time_begin = [today.getHours(), today.getMinutes(), today.getSeconds()];
-        time_interval_id = setInterval(start_time, 1000, time_begin, time_passed.get(all_tasks_id_by_position[current_focus-GAP_BETWEEN_POSITION_AND_ACTUAL_ARRAY_POSITION]));
+        start_time_clicking();
     }
 
     // init the complete task buttom at the info/description block. 
@@ -338,17 +337,11 @@
     function init_page_buttoms() {
         current_page_element = document.querySelector(MAIN_PAGE_ID);
         function show_main() {
-            current_page_element.style.display = 'none';
-            let ele = document.querySelector(MAIN_PAGE_ID);
-            ele.style.display = 'block';
-            current_page_element = ele;
+            switch_page(document.querySelector(MAIN_PAGE_ID));
         }
 
         function show_extension() {
-            current_page_element.style.display = 'none';
-            let ele = document.querySelector(EXTENSION_PAGE_ID);
-            ele.style.display = 'block';
-            current_page_element = ele; 
+            switch_page(document.querySelector(EXTENSION_PAGE_ID));
         }
 
         document.querySelector(MAIN_PAGE_BUTTOM_ID).addEventListener('click', show_main);
@@ -506,7 +499,6 @@
      * @param boolean run_test TRUE is tests should be run on the examples, FALSE if only to show examples
      * @return object An XML 'ul' node
      */
-
     /**
      * Parses a string to figure out the time it represents
      *
@@ -549,8 +541,28 @@
     }
 
     /*
+        TODO: 
+        User login
+    */
+    function init_login() {
+        let ele = document.querySelector(LOG_IN_LOGO_ID);
+        function to_login_page() {
+            switch_page(document.querySelector(LOGIN_PAGE_ID));
+        }
+        ele.addEventListener('click', to_login_page);
+    }
+
+
+    /*
         Below are helper functions
     */
+
+    // given a page element, hide the current page and show the given element. 
+    function switch_page(ele) {
+        current_page_element.style.display = 'none';
+        ele.style.display = 'block';
+        current_page_element = ele;  
+    }
 
     // append changes on the current_focus by setting the first few tasks to the end
     // return -1 if no changes have been append. 
@@ -653,13 +665,14 @@
     // display the second time using given id's time information and display the hide the second time. 
     function display_second_time(id) {
         let str = time_passed.get(id);
-        let arr = str.split(':');
+        let arr = str.split(TIME_SEPERATOR);
         for (let i = 0; i < 3; i++) {
             if (arr[i].toString().length == 1) {
                 arr[i] = '0' + arr[i];
             }
         }
-        str = arr[0] + ':' + arr[1] + ':' + arr[2];
+        
+        str = array_to_time(arr);
         let ele = document.querySelector(ALTERNATIVE_BIG_TIME);
         ele.textContent = str;
         // hide first time
@@ -698,26 +711,32 @@
         return ret;
     }
 
-    // start counting the time
+    function start_time_clicking() {
+        let today = new Date();
+        let time_begin = [today.getHours(), today.getMinutes(), today.getSeconds()];
+        time_interval_id = setInterval(increment_time, ONE_SECOND, time_begin, time_passed.get(all_tasks_id_by_position[current_focus-GAP_BETWEEN_POSITION_AND_ACTUAL_ARRAY_POSITION]));
+    }
+
+    // increase the time by one second 
+    // achieve by updating the difference time value 
     // take an array representing the time: [hours, mins, seconds]. 
-    async function start_time(time_begin, plus_time) {
-        plus_time = plus_time.split(':');
+    async function increment_time(time_begin, plus_time) {
+        plus_time = plus_time.split(TIME_SEPERATOR);
         let today = new Date();
         let time_now = [today.getHours(), today.getMinutes(), today.getSeconds()];
-        let arr = [
-            time_now[0]-time_begin[0]+parseInt(plus_time[0]),
-            time_now[1]-time_begin[1]+parseInt(plus_time[1]),
-            time_now[2]-time_begin[2]+parseInt(plus_time[2])
-        ]
-        while (arr[2] < 0) {
-            arr[1]--;
-            arr[2] = 60 + arr[2];
+        let new_time = [];
+        for (let i = 0; i < LENGTH_OF_TIME_FOMAT + 1; i++) {
+            new_time.push(time_now[i] - time_begin[i] + parseInt(plus_time[i]))
         }
-        while (arr[1] < 0) {
-            arr[0]--;
-            arr[1] = 60 + arr[1];
+        
+        for (let i = new_time.length - 1; i > 0; i--) {
+            while (new_time[i] < 0) {
+                new_time[i-1]--;
+                new_time[i] += 60
+            }
         }
-        set_time(arr[0] + ":" + arr[1] + ":" + arr[2]);
+        
+        set_time(array_to_time(new_time));
     }
 
     // light up the description block's confirm circle. 
@@ -748,7 +767,7 @@
                 continue;
             }
             let str = document.querySelector(NEW_TASK_ALL_ATTRIBUTES[i]).value;
-            if (str == '') {
+            if (str == '' || str === undefined) {
                 str = NEW_TASK_ALL_ATTRIBUTES_UNDERFINED_STATUES[i];
             }
             information.push(str);
@@ -843,6 +862,23 @@
         current_tasks = new_arr;
     }
 
+    // return the defalt time
+    function get_defalt_time (){
+        let arr = ['00', '00', '00'];
+        return array_to_time(arr);
+    }
+
+    function array_to_time(arr) {
+        let ret = ""
+        for(let i = 0; i < LENGTH_OF_TIME_FOMAT + 1; i++) {
+            ret += arr[i];
+            if (i!=LENGTH_OF_TIME_FOMAT) {
+                ret += TIME_SEPERATOR;
+            }
+        }
+        return ret;
+    }
+
 
     /*
         Below are extensions
@@ -855,6 +891,8 @@
     const EXTENSIONS_LIST = [color_extension];
     const EXTENSIONS_COUNT = EXTENSIONS_LIST.length;
     const EXTENSIONS_CONTAINER_DIV = '#extensions';
+    const EXTENSION_SMALL_DIVS_CLASSNAME = 'extension_bar';
+    const EXTENSION_LIGHT_DIVS_CLASSNAME = 'extension_light';
     let extension_is_active = new Map(); // Key = div element, Value = boolean 
 
     // function for adding an element to the extensions div
@@ -864,10 +902,10 @@
         let container = document.querySelector(EXTENSIONS_CONTAINER_DIV);
 
         let new_ele = document.createElement('div');
-        new_ele.className = 'extension_bar'; 
+        new_ele.className = EXTENSION_SMALL_DIVS_CLASSNAME; 
 
         let new_ele_light_bar = document.createElement('div');
-        new_ele_light_bar.className = 'extension_light';
+        new_ele_light_bar.className = EXTENSION_LIGHT_DIVS_CLASSNAME;
 
         let new_ele_decription = document.createElement('p');
         new_ele_decription.className = 'extension_description'; 
@@ -890,7 +928,7 @@
         function extension_clicked(ele) {
             // if this is already clicked, cancle
             let target = ele.target;
-            if (target.className != 'extension_bar') {
+            if (target.className != EXTENSION_SMALL_DIVS_CLASSNAME) {
                 target = target.parentElement;
             }
             extension_is_active.set(target, extension_is_active.get(target) ^ 1);
@@ -905,11 +943,11 @@
 
         function extension_light_on(ele) {
             ele = ele.target;
-            if (ele.className != 'extension_bar') {
+            if (ele.className != EXTENSION_SMALL_DIVS_CLASSNAME) {
                 ele = ele.parentElement;
             }
 
-            let arr = document.querySelectorAll('.extension_light');
+            let arr = document.querySelectorAll('.' + EXTENSION_LIGHT_DIVS_CLASSNAME);
             for (let i = 0; i < arr.length; i++) {
                 if (ele.contains(arr[i])) {
                     arr[i].style.opacity = NON_DARK_LIGHT_OPACITY_FOR_TASK_LIGHT;
@@ -920,7 +958,7 @@
 
         function extension_light_off(ele) {
             ele = ele.target;
-            if (ele.className != 'extension_bar') {
+            if (ele.className != EXTENSION_SMALL_DIVS_CLASSNAME) {
                 ele = ele.parentElement;
             }
 
@@ -928,10 +966,10 @@
                 return;
             }
 
-            let arr = document.querySelectorAll('.extension_light');
-            for (let i = 0; i < arr.length; i++) {
-                if (ele.contains(arr[i])) {
-                    arr[i].style.opacity = DARK_LIGHT_OPACITY_FOR_TASK_LIGHT;
+            let lights = document.querySelectorAll('.' + EXTENSION_LIGHT_DIVS_CLASSNAME);
+            for (let i = 0; i < lights.length; i++) {
+                if (ele.contains(lights[i])) {
+                    lights[i].style.opacity = DARK_LIGHT_OPACITY_FOR_TASK_LIGHT;
                     return;
                 }
             }
@@ -956,7 +994,7 @@
 
    /*
         @Yilin Yao
-        2022/1/1
+        2023/1/1
         Color extension - let user to change the main color as they wish
         return an element
     */
@@ -980,6 +1018,8 @@
         // returns a new setting element
         // element id = new_color_ele
         function new_setting_ele() {
+            // Maybe simplify this later? 
+
             let overall_div = document.createElement('div');
             overall_div.className = 'extension_bar';
             overall_div.id = 'new_color_ele';
@@ -1067,7 +1107,6 @@
                 try {
                     init_color(color);
                 } catch(error) {
-                    console.log('error');
                     return;
                 }
             })
@@ -1082,7 +1121,20 @@
 
             return overall_div;
         }
+
     }
+
+
+    /*
+        TODO: 
+        @Yilin Yao
+        2023/1/3
+        Auto Sort - automatically sort the order of the current tasks list
+        return an element representing the extension
+    */
+
+
+    
 
 
 
