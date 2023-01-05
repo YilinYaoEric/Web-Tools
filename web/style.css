@@ -491,3 +491,116 @@
     line-height: 12px;
     color: #B7B7B7;
 }
+
+/*
+    Login block
+*/
+#login_div {
+    position: absolute;
+    right: 40px;
+    top: 10px;
+}
+
+/*
+    login_logo_text
+*/
+#login_logo {
+    font-family: 'Inter';
+    font-style: 'normal';
+    font-weight: 500;
+    font-size: 15px;
+    line-height: 12px;
+    color: #B7B7B7; 
+    position: static;
+
+}
+
+/*
+    login_page
+*/
+#login_page {
+    display: none;
+}
+
+.textbox {
+    background-color: #2C2C2C;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 8px;
+    line-height: 12px;
+    color: #B7B7B7;
+    border:0;
+    outline:none;
+    resize: none;
+    top: 47px;
+    width: 360px; 
+}
+
+#username, #password{
+    position:static;
+    width: 250px;
+    height: 24px;
+    margin-top: 30px;
+    text-align: center;
+}
+
+#username::placeholder, #password::placeholder {
+    text-align: center;
+}
+
+#user_info_input {
+    position: absolute;
+    top: 30vh;
+    left: 40vw;
+    width: 250px;
+    height: 200px;
+}
+
+/*
+    TODO: fix the look for #login and create user
+*/
+#login {
+    position: absolute;
+    right:0;
+    text-align: center;
+}
+
+#create_user {
+    position: absolute;
+    width: 145;
+    top: 150;
+    right:0;
+}
+
+.button {
+    box-sizing: border-box;
+    background:#2C2C2C;
+    border: 0;
+}
+
+.placeholder_text {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 13px;
+    color: #696969;
+}
+
+.text {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300;
+    font-size: 11px;
+    line-height: 13px;
+    color: #B7B7B7; 
+}
+
+#login_error_hint {
+    font-size: 9;
+    text-align: center;
+    margin-top: -16;
+    color: darkred;
+    font-weight: bold;
+}
