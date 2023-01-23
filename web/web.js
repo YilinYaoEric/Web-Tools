@@ -30,7 +30,7 @@
     const PREDICTED_TIME_CLASS = ".predict_time";
     const PREDICTED_TIME_PREFIX = "Predicted: ";
     const CIRCLE_IN_INFO_BOX_CLASS = '.info_box .circle';
-    const VECTOR_IN_INFO_BOX_CLASS = '.info_box .vector'; // TODO, make a black and white version
+    const VECTOR_IN_INFO_BOX_CLASS = '.info_box .vector'; 
     const TASK_CONFIRM_CIRCLE_CLASS = '.info_box .confirm_buttom';
     const DESCRIPTION_BLOCK_TEXT_CLASS = '.info';
     const EXTENTION_BLOCK_CONFIRM_CLASS = '.extention_block .confirm_buttom';
@@ -75,6 +75,13 @@
     const NON_DARK_LIGHT_OPACITY_FOR_CONFIRM_CIRCLE = 1;
     const DARK_LIGHT_OPACITY_FOR_CONFIRM_CIRCLE = 0.5;
 
+    // fetch information 
+    const BASE_URL = 'http://localhost:8000/user';
+    const CREATE_URL = '/create';
+    const EXIST_URL = '/exist';
+    const LOGIN_ATTAMPT_URL = '/login_attampt';
+    const UPDATE_STATUS_URL = '/update_status';
+    const GET_STATUS = 'get_status';
     
 
     // this indicates the properties will be involved in each tasks. 
@@ -95,6 +102,16 @@
     let tasks_time = new Map();
     let time_passed = new Map();
     let current_page_element;
+
+    // server fetch global data
+    let loged_in = false;
+    let global_username = "";
+    let global_password = "";
+    let server_status = {
+        error_message: "",
+        has_error: false
+    };
+
     // IMPORTANT
     const ALL_ATTRIBUTES= [
         tasks_names, tasks_time, tasks_descriptions, time_passed
@@ -566,51 +583,56 @@
             return [username_ele.value, password_ele.value];
         }
 
-        function confirm_log_in() {
+        async function confirm_log_in() {
             let combination = get_username_and_password();
             let username = combination[0];
             let password = combination[1];
             let hint = document.querySelector(LOG_IN_ERROR_MESSAGE_DISPLACEMENT_ID);
             try {
+                hint.textContent = 'Logging In...';
                 username_is_valid(username);
                 password_is_valid(password);
+                await fetch_valid_password_and_username(username, password);
+                if (server_status.has_error) {
+                    server_status.has_error = false;
+                    throw new Error(server_status.error_message);
+                }
                 hint.textContent = 'loged in!';
                 hint.style.color = 'green';
             } catch(e) {
                 hint.style.color = 'darkred';
-                document.querySelector(LOG_IN_ERROR_MESSAGE_DISPLACEMENT_ID).textContent = (e.message);
+                hint.textContent = (e.message);
             }
         }
 
-        function confirm_create_user() {
+        async function confirm_create_user() {
             let combination = get_username_and_password();
             let username = combination[0];
             let password = combination[1];
+            let hint = document.querySelector(LOG_IN_ERROR_MESSAGE_DISPLACEMENT_ID);
             try {
-                new_username_is_valid(username);
+                hint.style.color = 'green';
+                hint.textContent = 'Creating User...';
                 password_is_valid(password);
-                document.querySelector(LOG_IN_ERROR_MESSAGE_DISPLACEMENT_ID).textContent = 'Account Created!';
-                hint.color = 'green';
+                username_is_valid(username);
+                await fetch_account_existed(username);
+                await fetch_new_account(username, password);
+                hint.textContent = 'Account Created!';
+                
             } catch(e) {
-                hint.color = 'darkred';
-                document.querySelector(LOG_IN_ERROR_MESSAGE_DISPLACEMENT_ID).textContent = (e.message);
+                hint.style.color = 'darkred';
+                hint.textContent = (e.message);
             }
         }
 
         // throw an error with error message if the username is not valid, otherwise does nothing
-        function username_is_valid(str) {
-                
+        function username_is_valid(str) {    
             if (
                 str === undefined ||
                 str == ''
             ) {
                 throw new Error('Empty Username');
             }
-        }
-
-        function new_username_is_valid(str) {
-            // TODO update this later with the backend storaged. -- there can't be two same username
-            username_is_valid(str);
         }
 
         function password_is_valid(str) {
@@ -621,11 +643,82 @@
             ) {
                 throw new Error('Empty Password');
             }
-
             if (str.length < 7) {
-                throw new Error('The Password Length Has To Be Greater Than 7.');
+                throw new Error('The Password Length Has to be Greater than 7');
             }
         }
+
+        
+    }
+
+    // check if the account is already existed
+    // if existed, return true, else throw
+    async function fetch_account_existed(username) {
+        let data = new FormData();
+        data.append('username', username);
+        let url = BASE_URL + EXIST_URL;
+        try{
+            let res = await fetch(url, {method: "POST", body: data});
+            await status_check(res);
+            await res.text()
+                .then(text => {
+                    console.log(text);
+                    if (text == 'exist') {
+                        throw new Error('Username Exist');
+                    }
+                });
+        } catch(e) {
+            throw e;
+        }
+    }
+
+    // create an account in the database
+    async function fetch_new_account(username, password) {
+        let data = new FormData();
+        data.append('username', username);
+        data.append('password', password);
+        let url = BASE_URL + CREATE_URL;
+        try{
+            let response = await fetch(url, {method: "POST", body: data});
+            await status_check(response);
+            await response.text()
+                .then(res => {
+                    if(res == 'Created') {
+                        fetch_valid_password_and_username(username, password);
+                    }else {
+                        throw new Error(res);
+                    }
+                })
+        } catch(e) {
+            throw e;
+        }
+        
+    }
+
+    // check if the password and username is valid, returns the user id. 
+    // if valid, return true, else return the error as text
+    async function fetch_valid_password_and_username(username, password) {
+        let data = new FormData();
+        data.append('username', username);
+        data.append('password', password);
+        let url = BASE_URL + LOGIN_ATTAMPT_URL;
+        try {
+            let response = await fetch(url, {method: "POST", body: data});
+            await status_check(response);
+            await response.text()
+                .then(res => {
+                    if (res != 'Passed') { // TODO change to version name
+                        throw new Error(res);
+                    } else {
+                        loged_in = true;
+                        global_password = password;
+                        global_username = username;
+                    }
+                })
+        } catch(e) {
+            throw e;
+        }
+       
     }
 
 
@@ -953,6 +1046,15 @@
             }
         }
         return ret;
+    }
+
+    // check the status of the promise
+    // return the response of the promise if the status is good. 
+    async function status_check(response) {
+        if (!response.ok) {
+            throw new Error(await response.text());
+        }
+        return response;
     }
 
 

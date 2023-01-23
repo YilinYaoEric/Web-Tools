@@ -23,7 +23,7 @@
         />
         <link rel="stylesheet" href="./style.css" />
         <script src="style.js"></script>
-        <script src='web.js'></script>
+        <script src="web.js"></script>
     <head>
 
     <body class="body">
@@ -59,7 +59,6 @@
 
                     <p class="task_name"></p>
                 </div>
-                
                 <!--
                     The prev arrow of task management
                     because the position of arrow will be relative to the task2 box, belong here
@@ -76,8 +75,6 @@
                 <div class="task_light"></div>
                 <p class="task_name"></p>
             </div> 
-            
-            
 
             <!--
                 The box that contains the inforamtion of the task
@@ -158,7 +155,6 @@
             The extionsion page
             combined with the second circle
         -->
-        
         <div id="extension_page">
 
             <div id="add_extension">
@@ -173,7 +169,6 @@
                     -->
                 </div>
             </div>
-            
             <div id="common_settings">
                 <p id="common_settings_text">Commonly Used Settings</p>
                 <div id="settings">
@@ -200,13 +195,18 @@
                 <form action="/action_page.php" id="search_">
                     <lable for="username"></lable>
                     <textarea id="username" name="username" placeholder="Username: " class="textbox"></textarea>
-                    <textarea id="password" name="password" placeholder="password" class="textbox"></textarea>
+                    <textarea id="password" name="password" placeholder="Password: " class="textbox"></textarea>
                 </form>
                 <button type="button" id="login" class="button placeholder_text">Login</button>
                 <button type="button" id="create_user" class="button placeholder_text">Create New Account</button>
                 <p id="login_error_hint" class="text"></p>
             </div>
         </div>
+        <!--
+            Increase the size of the whole thing by 10% -> login_page stuff
+        -->
+
+
     </body>
 
 </html>
