@@ -63,11 +63,7 @@ app.post('/user/exist', async (req, res) => {
         let respond = await db.all(sql, [username]);
         console.log('User search for: ' + username);
         console.log('User exist result: ' + respond[0]['COUNT(*)']);
-        if (respond[0]['COUNT(*)'] == 0) {
-            res.type('text').send('do not exist');
-            return;
-        }
-        res.type('text').send('exist');
+        res.type('text').send(respond[0]['COUNT(*)']);
     } catch(err) {
         throw_server_error(res);
     }

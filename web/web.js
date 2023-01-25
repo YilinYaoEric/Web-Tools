@@ -105,7 +105,7 @@
 
     // server fetch global data
     let loged_in = false;
-    let global_username = "";
+    let global_username = ""; // TODO set this
     let global_password = "";
     let server_status = {
         error_message: "",
@@ -115,6 +115,9 @@
     // IMPORTANT
     const ALL_ATTRIBUTES= [
         tasks_names, tasks_time, tasks_descriptions, time_passed
+    ];
+    const ALL_ATTRIBUTES_NAMES = [
+        "tasks_names", "tasks_time", "tasks_descriptions", "time_passed"
     ];
     const NEW_TASK_ALL_ATTRIBUTES_UNDERFINED_STATUES = [
         UNDEFINED_TASK_NAME, DEFALT_TIME, UNDEFINED_INFO, DEFALT_TIME
@@ -140,8 +143,12 @@
     function init_task(){
 
         // add contents to task1
-        let task1_info = FIRST_TASK_ATTRIBUTES;
-        create_new_task(task1_info);
+        // localStorage.clear();
+        if (localStorage.getItem('current_tasks') == null) {
+            create_new_task(FIRST_TASK_ATTRIBUTES);
+        } else {
+            read_data_from_local_host();
+        }
         place_all_tasks();
         lock_description();     
     
@@ -662,7 +669,6 @@
             await status_check(res);
             await res.text()
                 .then(text => {
-                    console.log(text);
                     if (text == 'exist') {
                         throw new Error('Username Exist');
                     }
@@ -978,6 +984,7 @@
         }
         current_tasks.push(id);
         place_all_tasks();
+        storage_data_to_local_host();
         return id;
     }
 
@@ -1029,6 +1036,7 @@
             }
         }
         current_tasks = new_arr;
+        storage_data_to_local_host();
     }
 
     // return the defalt time
@@ -1057,6 +1065,27 @@
         return response;
     }
 
+    function storage_data_to_local_host() {
+        // serializable to form [[key,value],[key,value],...];
+        localStorage.setItem('current_tasks', JSON.stringify(current_tasks));
+        for (let i = 0; i < ALL_ATTRIBUTES.length; i++) {
+            localStorage[ALL_ATTRIBUTES_NAMES[i]] = 
+                JSON.stringify(Array.from(ALL_ATTRIBUTES[i].entries()));
+        }
+    }
+
+    function read_data_from_local_host() {
+        // setup current tasks list
+        current_tasks = JSON.parse(localStorage.getItem('current_tasks'));
+        for (let i = 0; i < ALL_ATTRIBUTES.length; i++) {
+            // set all attributes
+            ALL_ATTRIBUTES[i].clear();
+            let temp_list = JSON.parse(localStorage[ALL_ATTRIBUTES_NAMES[i]]);
+            for (let j = 0; j < temp_list.length; j++) {
+                ALL_ATTRIBUTES[i].set(temp_list[j][0], temp_list[j][1]);
+            }
+        }
+    }
 
     /*
         Below are extensions
