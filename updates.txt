@@ -1,0 +1,4 @@
+refactor the whole structure of the js files by using module and react. 
+Increased the readibility of the js files. 
+Implemented more OOP. 
+
