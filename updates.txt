@@ -1,4 +1,2 @@
-refactor the whole structure of the js files by using module and react. 
-Increased the readibility of the js files. 
-Implemented more OOP. 
-
+refactor the whole project using react 
+haven't implement server connection and extension
