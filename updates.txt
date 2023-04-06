@@ -1,2 +1,0 @@
-refactor the whole project using react 
-haven't implement server connection and extension
