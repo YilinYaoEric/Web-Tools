@@ -1,11 +1,25 @@
 import Task from './task.js';
 
-// pre: the first 4 element in the tasks_list, which has the key 1,2,3,4 will 
-// be required. 
+/**
+ * pre: the first 4 element in the tasks_list, which has the key 1,2,3,4 will 
+ * be required. 
+ * @param {list} tasks_list a list of tasks that has been adjusted using the
+ * function defined in task_page.js 
+ * @param {function} clicked_task affect after clicking a task
+ * @param {function} set_light set the light value of the given task id
+ * This should take params: set_light(id, value)
+ * @param {function} set_temp_focus set the temp focus to be the given task id
+ * @param {function} add_page_num flip the page by a certain number
+ * @returns 
+ */
 const TasksArea = ({tasks_list, clicked_task, set_light, set_temp_focus, add_page_num}) => {
-    // id, text_content, is_light, hover_effect, 
-    // cancle_hover_effect, click_effect
 
+
+    /**
+     * create a task with using value in tasks and task id 
+     * @param {*} id the task id
+     * @returns a div represent a task
+     */
     let get_one = (id) => {
         if (!tasks_list[id]) {
             console.log(tasks_list[0].page);

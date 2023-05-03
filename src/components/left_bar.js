@@ -1,3 +1,8 @@
+/**
+ * In the left bar, user can select the page they want to visit.
+ * @param {Function} switch_page swtich the displaying page using the target page id 
+ * @returns a div represent the left bar
+ */
 const LeftBar = ({switch_page}) => {
     return (
         <>

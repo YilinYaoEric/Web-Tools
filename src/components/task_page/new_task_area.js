@@ -1,5 +1,11 @@
 import { useState } from "react";
 import {Time_passed} from "../time.js"; 
+
+/**
+ * this will add new tasks to the tasks_list when user wants.
+ * @param {function} new_task calling this function create a new task in the tasks_list 
+ * @returns a div representing the new task area
+ */
 const NewTaskArea = ({new_task}) => {
     const [name, set_name] = useState();
     const [hours, set_hours] = useState();
@@ -69,13 +75,29 @@ const NewTaskArea = ({new_task}) => {
     );
 };
 
+/**
+ * @param {string} placeholder placeholder of the returning input 
+ * @param {string} id id of the returning input 
+ * @param {string} className class name of the new input
+ * @param {string} label prefix before the input
+ * @param {string} value value of the input
+ * @param {function} change_value change the value to the given param
+ * @param {string} next_element the id of next element. if next_element is implemented,
+ * then whenever the value length > 1, the focus is moved on to next element. To not implement it,
+ * use undefined.
+ * @returns an input element
+ */
 const Input = ({placeholder, id, className, label, value, change_value, next_element}) => {
+    let first_change = false
     return (
         <>
             <input type="text" id={id} name={id} placeholder={placeholder} className={className}
             value={value}
             onChange={(e) => {change_value(e.target.value);}}
-            onKeyUp={next_element && value && value.length > 1 ? document.querySelector(next_element).focus() : ()=>{}}></input>
+            onKeyUp={next_element && value && value.length > 1 && !first_change ? () => {
+                document.querySelector(next_element).focus()
+                first_change = true
+                } : ()=>{}}></input>
             <label htmlFor={id}>{label}</label>
         </>
     )

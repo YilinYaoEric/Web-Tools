@@ -5,53 +5,30 @@ import TasksArea from "./tasks_area.js";
 import DescriptionArea from "./description_area.js";
 import TimeArea from "./time_area.js";
 // TODO swtich page
-// TODO local storage
 // TODO server
-const TaskPage = () => {
 
-  const name = "TaskPage";
+/**
+ * The task page contains task area, timer, new task area, and description area
+ * @param {string} tasks_list_string representing a list of tasks in JSON.stringify form
+ * @param {Object} default_task representing an empty task
+ * @returns a div representing the whole page
+ */
+const TaskPage = ({tasks_list_string, default_task}) => {
 
-  const default_task = {
-      is_light: 0,
-      text_content: "",
-      active: 0,
-      time_passed: new Time_passed(0,0,0),
-      predicted_time: new Time_passed(0,0,0),
-      description: "",
-  }
-
-  const default_data = [
-    {
-      id: 0,
-      page: 0
-    },
-    {
-      is_light: 0,
-      text_content: "This is a testing task",
-      active: 1,
-      time_passed: new Time_passed(0,0,0),
-      predicted_time: new Time_passed(1,0,0), 
-      description: "Some description",
-    }, 
-    {
-      is_light: 0,
-      text_content: "This is another testing task",
-      active: 1,
-      time_passed: new Time_passed(1,0,0),
-      predicted_time: new Time_passed(0,0,0),
-      description: "Rain Rain and Rain",
-    },
-    default_task, default_task
-  ]
-
-  // list[0] as the current focused task
+  // tasks_list[0] = {id: current focus id, name: localStorage name, page: current page number}
   const [tasks_list, set_tasks_list] = useState(
-      localStorage[name] ? adjust_tasks(parse_data(localStorage[name])) : default_data
+      adjust_tasks(parse_data(tasks_list_string))
     );
+  
+  const name = tasks_list[0].name
+
+  // save to localStorage
   useEffect(() => {
     localStorage.setItem(name, JSON.stringify(tasks_list));
-  }, [tasks_list]);
+  }, [tasks_list, name]);
 
+  // temperary foucs is the foucs that user's mouse is moved on to, but haved
+  // clicked yet.
   const [temperary_foucs, set_temp_focus] = useState(0);
 
   // auto update the time of the foucsed task's time_passed
@@ -86,7 +63,13 @@ const TaskPage = () => {
     return () => clearInterval(interval_id);
   });
 
-  // perform the click action to the given id
+
+  /**
+   * perform the click action to the given id
+   * if a clicked, then focus on the clicked task
+   * if the task is already focused, unfocus it.
+   * @param {number} id the id of the task 
+   */
   function clicked_task(id) {
     let this_task = tasks_list[id];
     let focused_id = tasks_list[0].id;
@@ -119,23 +102,41 @@ const TaskPage = () => {
     set_tasks_list(adjust_tasks(temp_list));
   }
 
-  // change the value in tasks_list
+
+  /**
+   * change the light value of the task list of the given task(id)
+   * @param {number} id the id of the target task
+   * @param {number} light_value the new value of light, can only be 1 or 0
+   */
   function set_light(id, light_value) {
     set_value_of_tasks_list(id, "is_light", light_value);
   }
 
-  // change the value in tasks_list
+
+  /**
+   * change the description value of the task list of the given task(id)
+   * @param {number} id the id of the target task
+   * @param {string} description_value the new value of description
+   */
   function set_description(id, description_value) {
     set_value_of_tasks_list(id, "description", description_value);
   }
 
-  // change the value in tasks_list
+
+  /**
+   * change the time_value of the task list of the given task(id)
+   * @param {number} id  the id of the target task
+   * @param {Time_passed} time_value an object representing the time passed
+   */
   function set_time_passed(id, time_value) {
     set_value_of_tasks_list(id, "time_passed", time_value);
   }
 
-  // change the value in task_list
-  // add_num can be negative
+
+  /**
+   * flip the page by x, where x = add_num.
+   * @param {number} add_num add page by add_num. Can be negative
+   */
   function add_page_num(add_num) {
     let page = tasks_list[0].page;
     page += add_num;
@@ -148,7 +149,13 @@ const TaskPage = () => {
     set_value_of_tasks_list(0, "page", page);
   }
 
-  // change the value in tasks_list
+
+  /**
+   * change the target value of the task list of the given task(id)
+   * @param {number} id  the id of the target task
+   * @param {string} value_name the value name for accessing the value in task list
+   * @param {*} value the target value
+   */
   function set_value_of_tasks_list(id, value_name, value) {
     let temp_list = [];
     for (let i = 0; i < tasks_list.length; i++) {
@@ -158,13 +165,21 @@ const TaskPage = () => {
     set_tasks_list(temp_list);
   }
 
-  // apppend defalt task, return the changed result
+
+  /**
+   * @param {list} list 
+   * @returns {list} a new list with an new empty task at end
+   */
   function append_empty_task(list) {
     return [...list, default_task];
   }
 
-  // IMPORTANT
-  // whenever one updates the contents in the list, this function is needed  
+
+  /**
+   * user should call this method everytime any changes is made to the list
+   * @param {list} list incomplete list of task
+   * @returns a list that is ready to use
+   */
   function adjust_tasks(list) {
     let temp_list = (list.filter( (t) => {return t.active===undefined || t.active} ));
 
@@ -185,7 +200,14 @@ const TaskPage = () => {
     return temp_list;
   }
 
-  // append a new active task given these informations
+
+  /**
+   * This will append a new task with the given properties and update the
+   * current tasks list data
+   * @param {string} name the task name that will be displayed to user
+   * @param {*} description the description that will be displayed to user
+   * @param {*} predicted_time the predicted time that will be displayed to user
+   */
   function append_task(name, description, predicted_time) {
     let list = [...tasks_list, {
       is_light: 0,
@@ -198,11 +220,13 @@ const TaskPage = () => {
     set_tasks_list(adjust_tasks(list));
   }
 
-  // delete the current focusing task. 
-  // TODO: append this to a finished list
+
+  /**
+   * delete the current focusing task
+   */
   function finish_current_focus() {
     if (!tasks_list[0].id) {
-      console.log("Warining! Finishing task with no focus");
+      console.log("Error: Finishing task with no focus");
       return;
     }
     let temp_list = (tasks_list.filter( (t) => {return t!==tasks_list[tasks_list[0].id]} ));
@@ -227,6 +251,12 @@ const TaskPage = () => {
   );
 }
 
+/**
+ * parse a string data to JSON data, while some objects inside
+ * are transfered in to Time_passed Objects defined in time.js
+ * @param {string} data a string in json fomate
+ * @returns {Object} the parsed result
+ */
 function parse_data(data) {
   let ret = JSON.parse(data);
   Object.keys(ret).forEach( (id) => {

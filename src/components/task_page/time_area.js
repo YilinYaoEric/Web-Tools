@@ -1,4 +1,10 @@
 import {Time_passed} from "../time.js"
+/**
+ * 
+ * @param {list} tasks_list a list of tasks
+ * @param {number} temp_foucs a task id representing the temp focus, 0 if ther is no temp focus
+ * @returns 
+ */
 const TimeArea = ({tasks_list, temp_foucs}) => {
     let time_passed = (
         temp_foucs ? 

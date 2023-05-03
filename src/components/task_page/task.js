@@ -15,7 +15,7 @@ const Task = ({list, id, clicked_task, set_light, set_temp_focus}) => {
             onMouseLeave={
                 list[id].active && id!==list[0].id ? () => {set_light(id, 0); set_temp_focus(0);} : () => {}
             }
-            style={{ cursor: "pointer" }}
+            style={list[id].active ? { cursor: "pointer" } : {}}
         >
             <div className={list[id].is_light ? "active_task_light" : "task_light"} ></div>
 
