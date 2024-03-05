@@ -1,3 +1,6 @@
+# Preview:
+<img width="1286" alt="image" src="https://github.com/YilinYaoEric/Web-Tools/assets/93957263/3617a982-ea8e-4e76-af98-43ded0cc6cd1">
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
